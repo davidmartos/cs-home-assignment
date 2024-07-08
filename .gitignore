@@ -4,3 +4,9 @@
 
 # Ignore build output directories
 out/
+
+# Ignore build target directories
+target/
+
+# Ignore Manifest file
+*.MF
