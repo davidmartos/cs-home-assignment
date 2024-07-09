@@ -20,12 +20,33 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>es.davidmartos.Main</mainClass> <!-- Replace with your main class -->
+              <classpathPrefix>dependency-jars/</classpathPrefix>
+              <mainClass>es.davidmartos.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.2.0</version>
+      </plugin>
+      <!-- Copy project dependency -->
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <configuration>
+              <!-- exclude junit, we need runtime dependency only -->
+              <includeScope>runtime</includeScope>
+              <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+            </configuration>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>2.5.1</version>
       </plugin>
     </plugins>
   </build>
@@ -68,7 +89,7 @@
     </dependency>
   </dependencies>
 
-  <groupId>ae.cyberspeed</groupId>
+  <groupId>es.davidmartos</groupId>
   <modelVersion>4.0.0</modelVersion>
 
   <properties>

@@ -1,6 +1,7 @@
 package es.davidmartos.model;
 
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class RewardResult {
 
-  private Double reward;
+  private BigDecimal reward;
 
-  private Set<String> appliedBonusSymbols;
+  private List<String> appliedBonusSymbols;
 }

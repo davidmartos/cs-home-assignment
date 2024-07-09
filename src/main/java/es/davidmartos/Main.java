@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.davidmartos.exception.NotFoundException;
 import es.davidmartos.model.GameConfig;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -24,13 +27,21 @@ public class Main {
 
     try {
       var mapper = new ObjectMapper();
-      var classloader = Thread.currentThread().getContextClassLoader();
-      var is = classloader.getResourceAsStream(configFilePath);
+      InputStream is;
+      var configFile = new File(configFilePath);
+
+      if (configFile.isAbsolute()) {
+        is = new FileInputStream(configFile);
+      } else {
+        var classloader = Thread.currentThread().getContextClassLoader();
+        is = classloader.getResourceAsStream(configFilePath);
+      }
       var gameConfig = mapper.readValue(is, GameConfig.class);
       System.out.println("GameConfig loaded correctly.");
 
       var game = new Game(gameConfig);
-      var result = game.playGame(bettingAmount);
+      var matrix = MatrixGenerator.generateMatrix(gameConfig);
+      var result = game.playGame(bettingAmount, matrix);
       var output = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
       System.out.println(output);
 

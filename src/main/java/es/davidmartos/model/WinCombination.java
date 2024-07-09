@@ -2,6 +2,7 @@ package es.davidmartos.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.Data;
 
@@ -10,7 +11,7 @@ import lombok.Data;
 public class WinCombination {
 
   @JsonProperty("reward_multiplier")
-  private Double rewardMultiplier;
+  private BigDecimal rewardMultiplier;
 
   private String when;
 
