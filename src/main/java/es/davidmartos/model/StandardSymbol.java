@@ -1,4 +1,4 @@
-package ae.cyberspeed.model;
+package es.davidmartos.model;
 
 import java.util.Map;
 import lombok.Data;

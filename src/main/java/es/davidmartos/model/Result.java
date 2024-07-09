@@ -1,4 +1,4 @@
-package ae.cyberspeed.model;
+package es.davidmartos.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

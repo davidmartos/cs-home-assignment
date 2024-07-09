@@ -1,4 +1,4 @@
-package ae.cyberspeed.exception;
+package es.davidmartos.exception;
 
 import javax.management.OperationsException;
 

@@ -1,4 +1,4 @@
-package ae.cyberspeed.model;
+package es.davidmartos.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

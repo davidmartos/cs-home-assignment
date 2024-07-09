@@ -1,11 +1,11 @@
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import ae.cyberspeed.Game;
-import ae.cyberspeed.exception.NotFoundException;
-import ae.cyberspeed.model.GameConfig;
-import ae.cyberspeed.model.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import es.davidmartos.Game;
+import es.davidmartos.exception.NotFoundException;
+import es.davidmartos.model.GameConfig;
+import es.davidmartos.model.Result;
 import java.io.File;
 import org.junit.Before;
 import org.junit.Test;

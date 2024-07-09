@@ -1,9 +1,9 @@
-package ae.cyberspeed;
+package es.davidmartos;
 
-import ae.cyberspeed.exception.NotFoundException;
-import ae.cyberspeed.model.GameConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import es.davidmartos.exception.NotFoundException;
+import es.davidmartos.model.GameConfig;
 import java.io.IOException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;

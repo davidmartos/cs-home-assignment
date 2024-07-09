@@ -1,10 +1,10 @@
-package ae.cyberspeed;
+package es.davidmartos;
 
-import ae.cyberspeed.exception.NotFoundException;
-import ae.cyberspeed.model.GameConfig;
-import ae.cyberspeed.model.Result;
-import ae.cyberspeed.model.RewardResult;
-import ae.cyberspeed.model.StandardSymbol;
+import es.davidmartos.exception.NotFoundException;
+import es.davidmartos.model.GameConfig;
+import es.davidmartos.model.Result;
+import es.davidmartos.model.RewardResult;
+import es.davidmartos.model.StandardSymbol;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,12 +22,7 @@ public class Game {
 
   public Result playGame(Double betAmount) throws NotFoundException {
 
-    //    var matrix = generateMatrix();
-    String[][] matrix = {
-      {"A", "A", "B"},
-      {"A", "+1000", "B"},
-      {"A", "A", "B"}
-    };
+    var matrix = generateMatrix();
     var winningCombinations = checkWinningCombinations(matrix);
     var rewardResult = calculateAndApplyBonus(matrix, betAmount, winningCombinations);
 
@@ -88,31 +83,58 @@ public class Game {
   private Map<String, List<String>> checkWinningCombinations(String[][] matrix) {
 
     var winningCombinations = new HashMap<String, List<String>>();
+    var symbolCounts = new HashMap<String, Integer>();
+    var highestSameSymbolCombination = new HashMap<String, String>();
 
-    // Check each type of winning combination in the configuration
+    var standardSymbols = gameConfig.getStandardSymbols();
+
+    // Track symbol counts and highest same-symbol combination
+    for (int row = 0; row < gameConfig.getRows(); row++) {
+      for (int col = 0; col < gameConfig.getColumns(); col++) {
+        var symbol = matrix[row][col];
+        if (standardSymbols.contains(symbol)) { // Only consider standard symbols
+          symbolCounts.put(symbol, symbolCounts.getOrDefault(symbol, 0) + 1);
+        }
+      }
+    }
+
+    // Determine the highest applicable same-symbol combination for each symbol
     for (var entry : gameConfig.getWinCombinations().entrySet()) {
       var combinationName = entry.getKey();
       var winCombination = entry.getValue();
 
-      // Check for same symbols combinations
       if ("same_symbols".equals(winCombination.getWhen())) {
-        var symbolCounts = new HashMap<String, Integer>();
-        for (int row = 0; row < gameConfig.getRows(); row++) {
-          for (int col = 0; col < gameConfig.getColumns(); col++) {
-            var symbol = matrix[row][col];
-            symbolCounts.put(symbol, symbolCounts.getOrDefault(symbol, 0) + 1);
-          }
-        }
-
         for (var countEntry : symbolCounts.entrySet()) {
-          if (countEntry.getValue() >= winCombination.getCount()) {
-            winningCombinations
-                .computeIfAbsent(countEntry.getKey(), k -> new ArrayList<>())
-                .add(combinationName);
+          var symbol = countEntry.getKey();
+          var count = countEntry.getValue();
+
+          if (count >= winCombination.getCount()) {
+            var currentHighestCombination = highestSameSymbolCombination.get(symbol);
+            if (currentHighestCombination == null
+                || gameConfig.getWinCombinations().get(currentHighestCombination).getCount()
+                    < winCombination.getCount()) {
+              highestSameSymbolCombination.put(symbol, combinationName);
+            }
           }
         }
-      } // Check for linear symbols combinations
-      else if ("linear_symbols".equals(winCombination.getWhen())) {
+      }
+    }
+
+    // Add highest same-symbol combinations to winningCombinations
+    for (var entry : highestSameSymbolCombination.entrySet()) {
+      var symbol = entry.getKey();
+      var combinationName = entry.getValue();
+      var list = new ArrayList<String>();
+      list.add(combinationName);
+      winningCombinations.put(symbol, list);
+    }
+
+    // Check for linear symbols combinations
+    for (var entry : gameConfig.getWinCombinations().entrySet()) {
+      var combinationName = entry.getKey();
+      var winCombination = entry.getValue();
+
+      if ("linear_symbols".equals(winCombination.getWhen())) {
         for (var coveredArea : winCombination.getCoveredAreas()) {
           String firstSymbol = null;
           var isWinningCombination = true;
@@ -151,11 +173,14 @@ public class Game {
       var symbol = entry.getKey();
       var combinations = entry.getValue();
       var symbolRewardMultiplier = gameConfig.getSymbols().get(symbol).getRewardMultiplier();
+      var combinedMultiplier = 1.0;
 
       for (var combination : combinations) {
         var winCombination = gameConfig.getWinCombinations().get(combination);
-        reward += betAmount * symbolRewardMultiplier * winCombination.getRewardMultiplier();
+        combinedMultiplier *= winCombination.getRewardMultiplier();
       }
+      // Calculate the reward contribution for this symbol and add to total reward
+      reward += betAmount * symbolRewardMultiplier * combinedMultiplier;
     }
 
     if (reward <= 0.0) {

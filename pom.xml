@@ -20,7 +20,7 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>ae.cyberspeed.Main</mainClass> <!-- Replace with your main class -->
+              <mainClass>es.davidmartos.Main</mainClass> <!-- Replace with your main class -->
             </manifest>
           </archive>
         </configuration>
