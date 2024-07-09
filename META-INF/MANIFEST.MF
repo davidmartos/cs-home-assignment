@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Created-By: Maven Jar Plugin 3.2.0
+Build-Jdk-Spec: 17
+Class-Path: jackson-databind-2.12.3.jar jackson-core-2.12.3.jar jackson-
+ annotations-2.12.3.jar commons-cli-1.4.jar
+Main-Class: es.davidmartos.Main
+

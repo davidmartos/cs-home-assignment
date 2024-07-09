@@ -18,7 +18,7 @@ public class Game {
     this.gameConfig = gameConfig;
   }
 
-  public Result playGame(Double betAmount, String[][] matrix) throws NotFoundException {
+  public Result playGame(BigDecimal betAmount, String[][] matrix) throws NotFoundException {
 
     var winningCombinations = checkWinningCombinations(matrix);
     var rewardResult = calculateAndApplyBonus(matrix, betAmount, winningCombinations);
@@ -38,7 +38,7 @@ public class Game {
 
     var standardSymbols = gameConfig.getStandardSymbols();
 
-    // Track symbol counts and highest same-symbol combination
+    // Check symbol counts and highest same-symbol combination
     for (int row = 0; row < gameConfig.getRows(); row++) {
       for (int col = 0; col < gameConfig.getColumns(); col++) {
         var symbol = matrix[row][col];
@@ -115,31 +115,26 @@ public class Game {
   }
 
   public RewardResult calculateAndApplyBonus(
-      String[][] matrix, Double betAmount, Map<String, List<String>> winningCombinations) {
+      String[][] matrix, BigDecimal betAmount, Map<String, List<String>> winningCombinations) {
 
-    var reward = new BigDecimal(0);
+    var reward = BigDecimal.ZERO;
 
     for (var entry : winningCombinations.entrySet()) {
       var symbol = entry.getKey();
       var combinations = entry.getValue();
       var symbolRewardMultiplier = gameConfig.getSymbols().get(symbol).getRewardMultiplier();
-      var combinedMultiplier = new BigDecimal(1.0);
+      var combinedMultiplier = new BigDecimal("1.0");
 
       for (var combination : combinations) {
         var winCombination = gameConfig.getWinCombinations().get(combination);
-        combinedMultiplier =
-            combinedMultiplier.add(
-                combinedMultiplier.multiply(winCombination.getRewardMultiplier()));
+        combinedMultiplier = combinedMultiplier.multiply(winCombination.getRewardMultiplier());
       }
       // Calculate the reward contribution for this symbol and add to total reward
-      reward =
-          reward.add(
-              BigDecimal.valueOf(betAmount)
-                  .multiply(symbolRewardMultiplier)
-                  .multiply(combinedMultiplier));
+      reward = reward.add(betAmount.multiply(symbolRewardMultiplier).multiply(combinedMultiplier));
     }
 
-    if (reward.compareTo(BigDecimal.ZERO) <= 0) {
+    // If reward is zero or less, then we do not apply any bonus symbols
+    if (reward.signum() <= 0) {
       return new RewardResult(reward, null);
     }
 

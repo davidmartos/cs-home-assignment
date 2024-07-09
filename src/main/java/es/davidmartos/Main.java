@@ -6,11 +6,12 @@ import es.davidmartos.exception.NotFoundException;
 import es.davidmartos.model.GameConfig;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -18,25 +19,14 @@ import org.apache.commons.cli.ParseException;
 public class Main {
 
   public static void main(String[] args) {
-    var cmd = readArgs(args);
-    var configFilePath = cmd.getOptionValue("config");
-    var bettingAmount = Double.parseDouble(cmd.getOptionValue("betting-amount"));
-
-    System.out.println("Config file path: " + configFilePath);
-    System.out.println("Betting amount: " + bettingAmount);
-
     try {
-      var mapper = new ObjectMapper();
-      InputStream is;
-      var configFile = new File(configFilePath);
+      var cmd = readArgs(args);
+      var configFilePath = cmd.getOptionValue("config");
+      var bettingAmount = new BigDecimal(cmd.getOptionValue("betting-amount"));
 
-      if (configFile.isAbsolute()) {
-        is = new FileInputStream(configFile);
-      } else {
-        var classloader = Thread.currentThread().getContextClassLoader();
-        is = classloader.getResourceAsStream(configFilePath);
-      }
-      var gameConfig = mapper.readValue(is, GameConfig.class);
+      var mapper = new ObjectMapper();
+      var inputStream = readInputFile(configFilePath);
+      var gameConfig = mapper.readValue(inputStream, GameConfig.class);
       System.out.println("GameConfig loaded correctly.");
 
       var game = new Game(gameConfig);
@@ -51,10 +41,14 @@ public class Main {
       System.out.println("JsonProcessingException " + e.getMessage());
     } catch (IOException e) {
       System.out.println("IOException " + e.getMessage());
+    } catch (ParseException e) {
+      System.out.println(e.getMessage());
+    } finally {
+      System.exit(1);
     }
   }
 
-  private static CommandLine readArgs(String[] args) {
+  private static CommandLine readArgs(String[] args) throws ParseException {
     var options = new Options();
 
     var configOption = new Option("c", "config", true, "Path to config file");
@@ -66,19 +60,18 @@ public class Main {
     options.addOption(bettingAmountOption);
 
     var parser = new DefaultParser();
-    var formatter = new HelpFormatter();
-    CommandLine cmd = null;
 
-    try {
-      cmd = parser.parse(options, args);
-    } catch (ParseException e) {
-      System.out.println(e.getMessage());
-      formatter.printHelp(
-          "java -jar <your-jar-file> --config <config-file-path> --betting-amount <betting-amount>",
-          options);
-      System.exit(1);
+    return parser.parse(options, args);
+  }
+
+  private static InputStream readInputFile(String path) throws FileNotFoundException {
+    var configFile = new File(path);
+
+    if (configFile.isAbsolute()) {
+      return new FileInputStream(configFile);
     }
 
-    return cmd;
+    var classloader = Thread.currentThread().getContextClassLoader();
+    return classloader.getResourceAsStream(path);
   }
 }

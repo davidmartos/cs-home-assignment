@@ -16,6 +16,8 @@ import org.junit.Test;
 
 public class GameTest {
 
+  private static BigDecimal BET_AMOUNT = new BigDecimal("10.0");
+
   private Game game;
 
   @Before
@@ -33,7 +35,7 @@ public class GameTest {
       {"A", "A", "A"}
     };
 
-    var result = game.playGame(10.0, matrix);
+    var result = game.playGame(BET_AMOUNT, matrix);
 
     assertNotNull(result);
     assertRewardEquals("16000000.000", result.getReward());
@@ -52,7 +54,7 @@ public class GameTest {
       {"A", "B", "C"}
     };
 
-    var result = game.playGame(10.0, matrix);
+    var result = game.playGame(BET_AMOUNT, matrix);
 
     assertNotNull(result);
     assertRewardEquals("0.000", result.getReward());
@@ -68,7 +70,7 @@ public class GameTest {
       {"F", "D", "B"}
     };
 
-    var result = game.playGame(10.0, matrix);
+    var result = game.playGame(BET_AMOUNT, matrix);
 
     assertNotNull(result);
     assertRewardEquals("2500.000", result.getReward());
@@ -84,7 +86,7 @@ public class GameTest {
       {"A", "MISS", "5x"}
     };
 
-    var result = game.playGame(10.00, matrix);
+    var result = game.playGame(BET_AMOUNT, matrix);
 
     assertNotNull(result);
     assertRewardEquals("67500.000", result.getReward());
@@ -104,7 +106,7 @@ public class GameTest {
       {"D", "MISS", "5x"}
     };
 
-    var result = game.playGame(10.00, matrix);
+    var result = game.playGame(BET_AMOUNT, matrix);
 
     assertNotNull(result);
     assertRewardEquals("0.000", result.getReward());
