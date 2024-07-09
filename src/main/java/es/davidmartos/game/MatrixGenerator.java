@@ -1,4 +1,4 @@
-package es.davidmartos;
+package es.davidmartos.game;
 
 import es.davidmartos.exception.NotFoundException;
 import es.davidmartos.model.GameConfig;

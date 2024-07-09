@@ -2,6 +2,8 @@ package es.davidmartos.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import es.davidmartos.config.BigDecimalWithoutTrailingZerosSerializer;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,7 @@ public class Result {
 
   private String[][] matrix;
 
+  @JsonSerialize(using = BigDecimalWithoutTrailingZerosSerializer.class)
   private BigDecimal reward;
 
   @JsonProperty("applied_winning_combinations")

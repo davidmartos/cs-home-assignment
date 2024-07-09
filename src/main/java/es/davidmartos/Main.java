@@ -3,6 +3,8 @@ package es.davidmartos;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.davidmartos.exception.NotFoundException;
+import es.davidmartos.game.Game;
+import es.davidmartos.game.MatrixGenerator;
 import es.davidmartos.model.GameConfig;
 import java.io.File;
 import java.io.FileInputStream;

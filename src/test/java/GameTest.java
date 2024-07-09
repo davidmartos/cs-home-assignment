@@ -4,8 +4,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import es.davidmartos.Game;
 import es.davidmartos.exception.NotFoundException;
+import es.davidmartos.game.Game;
 import es.davidmartos.model.GameConfig;
 import es.davidmartos.model.Result;
 import java.io.File;
